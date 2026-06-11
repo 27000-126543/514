@@ -1,11 +1,11 @@
 import { Router, Response } from 'express';
 import { getDb } from '../db/database';
-import { AuthRequest } from '../middleware/auth';
+import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { Message } from '../../shared/types';
 
 const router = Router();
 
-router.get('/', async (req: AuthRequest, res: Response) => {
+router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
     const { type, isRead } = req.query;
@@ -57,7 +57,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.get('/unread-count', async (req: AuthRequest, res: Response) => {
+router.get('/unread-count', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
     const db = await getDb();
@@ -78,7 +78,7 @@ router.get('/unread-count', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.put('/:id/read', async (req: AuthRequest, res: Response) => {
+router.put('/:id/read', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const db = await getDb();
@@ -92,7 +92,7 @@ router.put('/:id/read', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.put('/read-all', async (req: AuthRequest, res: Response) => {
+router.put('/read-all', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
     const db = await getDb();
@@ -106,7 +106,7 @@ router.put('/read-all', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.get('/:id/voucher', async (req: AuthRequest, res: Response) => {
+router.get('/:id/voucher', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user?.id;

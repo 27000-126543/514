@@ -1,34 +1,20 @@
 import initSqlJs, { Database } from 'sql.js';
 import { v4 as uuidv4 } from 'uuid';
-import * as path from 'path';
-import * as fs from 'fs';
-
-type OrderStatus = 'pending' | 'shipped' | 'completed';
 
 let db: Database | null = null;
 
 const initDatabase = async (): Promise<Database> => {
   if (db) return db;
 
-  let SQL;
-  try {
-    const wasmPath = path.resolve(process.cwd(), 'node_modules/sql.js/dist/sql-wasm.wasm');
-    const wasmBuffer = fs.readFileSync(wasmPath);
-    SQL = await initSqlJs({
-      wasmBinary: wasmBuffer,
-    });
-  } catch (e) {
-    console.log('WASM failed, falling back to ASM.js');
-    const initAsm = require('sql.js/dist/sql-asm.js');
-    SQL = await initAsm();
-  }
+  const SQL = await initSqlJs({
+    locateFile: (file: string) => `https://sql.js.org/dist/${file}`
+  });
 
   db = new SQL.Database();
 
-  db.run(`
-    CREATE TABLE users (
-      id TEXT PRIMARY KEY,
-      username TEXT UNIQUE NOT NULL,
+    SQL = await initSqlJs({
+      wasmBinary: wasmBuffer,
+    });
       password_hash TEXT NOT NULL,
       name TEXT NOT NULL,
       role TEXT NOT NULL CHECK(role IN ('farmer', 'technician', 'admin', 'finance')),
@@ -294,6 +280,7 @@ const seedData = (db: Database) => {
   `);
 
 
+type OrderStatus = 'pending' | 'shipped' | 'completed';
   db.run(`
     INSERT INTO zones (id, name, area, target_output, status, current_stock, growth_rate) VALUES
     ('zone001', 'A区 - 近海养殖区', 5000, 50000, 'normal', 35000, 0.85),

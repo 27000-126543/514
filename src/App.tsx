@@ -21,86 +21,34 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
-        }>
+        <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           
-          <Route path="dashboard" element={
-            <ProtectedRoute requiredRoles={['admin', 'farmer', 'technician', 'finance']}>
-              <Dashboard />
-            </ProtectedRoute>
-          } />
+          <Route path="dashboard" element={<Dashboard />} />
           
-          <Route path="zones" element={
-            <ProtectedRoute requiredRoles={['admin']}>
-              <Zones />
-            </ProtectedRoute>
-          } />
+          <Route path="zones" element={<Zones />} />
           
-          <Route path="fry-release" element={
-            <ProtectedRoute requiredRoles={['admin', 'farmer']}>
-              <FryRelease />
-            </ProtectedRoute>
-          } />
+          <Route path="fry-release" element={<FryRelease />} />
           
-          <Route path="water-quality" element={
-            <ProtectedRoute requiredRoles={['admin', 'technician']}>
-              <WaterQuality />
-            </ProtectedRoute>
-          } />
+          <Route path="water-quality" element={<WaterQuality />} />
           
-          <Route path="warnings" element={
-            <ProtectedRoute requiredRoles={['admin', 'technician', 'farmer']}>
-              <Warnings />
-            </ProtectedRoute>
-          } />
+          <Route path="warnings" element={<Warnings />} />
           
-          <Route path="feeding" element={
-            <ProtectedRoute requiredRoles={['admin', 'farmer']}>
-              <Feeding />
-            </ProtectedRoute>
-          } />
+          <Route path="feeding" element={<Feeding />} />
           
-          <Route path="harvest" element={
-            <ProtectedRoute requiredRoles={['admin', 'farmer']}>
-              <Harvest />
-            </ProtectedRoute>
-          } />
+          <Route path="harvest" element={<Harvest />} />
           
-          <Route path="traceability" element={
-            <ProtectedRoute requiredRoles={['admin', 'farmer']}>
-              <Traceability />
-            </ProtectedRoute>
-          } />
+          <Route path="traceability" element={<Traceability />} />
           
-          <Route path="finance" element={
-            <ProtectedRoute requiredRoles={['admin', 'finance']}>
-              <Finance />
-            </ProtectedRoute>
-          } />
+          <Route path="finance" element={<Finance />} />
           
-          <Route path="messages" element={
-            <ProtectedRoute requiredRoles={['admin', 'farmer', 'technician', 'finance']}>
-              <Messages />
-            </ProtectedRoute>
-          } />
+          <Route path="messages" element={<Messages />} />
           
-          <Route path="users" element={
-            <ProtectedRoute requiredRoles={['admin']}>
-              <Users />
-            </ProtectedRoute>
-          } />
+          <Route path="users" element={<Users />} />
           
-          <Route path="settings" element={
-            <ProtectedRoute requiredRoles={['admin']}>
-              <Settings />
-            </ProtectedRoute>
-          } />
+          <Route path="settings" element={<Settings />} />
         </Route>
-        
+
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>

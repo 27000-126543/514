@@ -7,16 +7,16 @@ const router = Router();
 
 router.post('/login', async (req: AuthRequest, res: Response) => {
   try {
-    const { username, password, role }: LoginRequest = req.body;
+    const { username, password }: LoginRequest = req.body;
     const db = await getDb();
 
     const result = db.exec(
-      'SELECT id, username, name, role, phone, email, status FROM users WHERE username = ? AND password_hash = ? AND role = ?',
-      [username, password, role]
+      'SELECT id, username, name, role, phone, email, status FROM users WHERE username = ? AND password_hash = ?',
+      [username, password]
     );
 
     if (result.length === 0 || result[0].values.length === 0) {
-      return res.status(401).json({ error: '用户名、密码或角色错误' });
+      return res.status(401).json({ error: '用户名或密码错误' });
     }
 
     const row = result[0].values[0];

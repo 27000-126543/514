@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore.js";
 import { hasAccess } from "../config/routes.js";
@@ -10,36 +9,29 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
-  const { isAuthenticated, user, checkAuth, token } = useAuthStore();
+  const { user } = useAuthStore();
   const location = useLocation();
-  const [isChecking, setIsChecking] = useState(!token);
 
-  useEffect(() => {
-    if (!token) {
-      setIsChecking(false);
-      return;
-    }
-    const verifyAuth = async () => {
-      await checkAuth();
-      setIsChecking(false);
-    };
-    verifyAuth();
-  }, [checkAuth, token]);
-
-  if (isChecking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-teal-500 border-t-transparent"></div>
-      </div>
-    );
+  const token = localStorage.getItem('token');
+  const userStr = localStorage.getItem('user');
+  
+  if (!token || !userStr) {
+    return <Navigate to="/login" state={ { from: location }} replace />;
   }
 
-  if (!isAuthenticated || !user) {
+  let effectiveUser = user;
+  if (!effectiveUser) {
+    try {
+      effectiveUser = JSON.parse(userStr);
+    } catch {}
+  }
+
+  if (!effectiveUser) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (requiredRoles && requiredRoles.length > 0) {
-    const hasRoleAccess = hasAccess(location.pathname, user.role);
+    const hasRoleAccess = hasAccess(location.pathname, effectiveUser.role);
     if (!hasRoleAccess) {
       return <Navigate to="/dashboard" replace />;
     }
