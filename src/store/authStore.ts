@@ -12,6 +12,7 @@ interface AuthState {
   login: (data: LoginRequest) => Promise<boolean>;
   logout: () => void;
   setUser: (user: User) => void;
+  restoreAuth: (user: User, token: string) => void;
   clearError: () => void;
   checkAuth: () => Promise<boolean>;
   initialize: () => void;
@@ -68,6 +69,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   logout: () => {
     authApi.logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     set({
       user: null,
       token: null,
@@ -80,6 +83,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     localStorage.setItem("user", JSON.stringify(user));
   },
 
+  restoreAuth: (user: User, token: string) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ user, token, isAuthenticated: true });
+  },
+
   clearError: () => set({ error: null }),
 
   checkAuth: async () => {
@@ -88,6 +97,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     
     if (!token || !storedUser) {
       authApi.logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
       set({ isAuthenticated: false, user: null, token: null });
       return false;
     }
@@ -102,6 +113,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return true;
       } else {
         authApi.logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
         set({ isAuthenticated: false, user: null, token: null });
         return false;
       }

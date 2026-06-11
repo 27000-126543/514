@@ -1,12 +1,14 @@
 import { Router, Response } from 'express';
 import { getDb } from '../db/database';
-import { AuthRequest } from '../middleware/auth';
+import { authMiddleware, roleMiddleware, AuthRequest } from '../middleware/auth';
 import { Zone, DiseaseRule } from '../../shared/types';
 import { generateId } from '../utils/helpers';
 
 const router = Router();
+router.use(authMiddleware);
+router.use(roleMiddleware(['admin']));
 
-router.get('/', async (req: AuthRequest, res: Response) => {
+router.get('/', authMiddleware, roleMiddleware(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const db = await getDb();
     
@@ -55,7 +57,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.get('/:id', async (req: AuthRequest, res: Response) => {
+router.get('/:id', authMiddleware, roleMiddleware(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const db = await getDb();
@@ -98,7 +100,7 @@ router.get('/:id', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.post('/', async (req: AuthRequest, res: Response) => {
+router.post('/', authMiddleware, roleMiddleware(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { name, area, targetOutput, status, currentStock, growthRate } = req.body;
     const db = await getDb();
@@ -130,7 +132,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.put('/:id', async (req: AuthRequest, res: Response) => {
+router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { name, area, targetOutput, status, currentStock, growthRate, diseaseControlRules } = req.body;

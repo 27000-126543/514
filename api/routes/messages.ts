@@ -4,6 +4,7 @@ import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { Message } from '../../shared/types';
 
 const router = Router();
+router.use(authMiddleware);
 
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {

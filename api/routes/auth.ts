@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { getDb } from '../db/database';
-import { AuthRequest, generateToken } from '../middleware/auth';
+import { authMiddleware, AuthRequest, generateToken } from '../middleware/auth';
 import { LoginRequest, LoginResponse, User } from '../../shared/types';
 
 const router = Router();
@@ -53,7 +53,7 @@ router.post('/login', async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.get('/me', async (req: AuthRequest, res: Response) => {
+router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: '未授权访问' });

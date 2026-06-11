@@ -5,6 +5,8 @@ import { authMiddleware, roleMiddleware, AuthRequest } from '../middleware/auth.
 import { User, UserRole } from '../../shared/types.js';
 
 const router = Router();
+router.use(authMiddleware);
+router.use(roleMiddleware(['admin']));
 
 router.get('/', authMiddleware, roleMiddleware(['admin']), async (req: AuthRequest, res: Response) => {
   try {
